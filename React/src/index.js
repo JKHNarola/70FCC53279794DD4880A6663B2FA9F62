@@ -111,32 +111,18 @@ class MultipleFileUpload extends React.Component {
                             createReloadListRequest();
                         },
                         onError: (res) => {
-                            if (res && res.msg === "Request aborted")
-                                this.setState(prevState => ({
-                                    selectedFiles: prevState.selectedFiles.map(el =>
-                                        el.id === id ? {
-                                            ...el,
-                                            status: "Aborted",
-                                            response: res,
-                                            borderClass: "border-danger",
-                                            backgroundColor: "#ffdddd",
-                                            statusTextColorClass: "text-danger",
-                                            progressBarColorClass: "bg-danger"
-                                        } : el)
-                                }));
-                            else
-                                this.setState(prevState => ({
-                                    selectedFiles: prevState.selectedFiles.map(el =>
-                                        el.id === id ? {
-                                            ...el,
-                                            status: "Failed",
-                                            response: res,
-                                            borderClass: "border-danger",
-                                            backgroundColor: "#ffdddd",
-                                            statusTextColorClass: "text-danger",
-                                            progressBarColorClass: "bg-danger"
-                                        } : el)
-                                }));
+                            this.setState(prevState => ({
+                                selectedFiles: prevState.selectedFiles.map(el =>
+                                    el.id === id ? {
+                                        ...el,
+                                        status: res && res.status === 604 ? "Aborted" : "Failed",
+                                        response: res,
+                                        borderClass: "border-danger",
+                                        backgroundColor: "#ffdddd",
+                                        statusTextColorClass: "text-danger",
+                                        progressBarColorClass: "bg-danger"
+                                    } : el)
+                            }));
                         },
                         onComplete: () => {
                             resolve();
@@ -400,7 +386,7 @@ class FileList extends React.Component {
                 this.setState({ data: lst });
             },
             onError: (res) => {
-                if (res.msg !== "Request aborted") toast.error("Some error occured while getting list of files.");
+                if (res.status !== 604) toast.error("Some error occured while getting list of files.");
             },
             onComplete: () => {
                 this.setState({ isLoading: false });
