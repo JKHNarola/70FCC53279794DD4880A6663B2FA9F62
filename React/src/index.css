@@ -54,7 +54,7 @@ img {
   right: 3px;
   top: 0;
   padding: 3px;
-  z-index: 2000;
+  z-index: 100;
 }
 
 .file-remove-btn>i {
@@ -129,6 +129,81 @@ img {
   top: 0;
   left: 0;
   background: #ffffffde;
-  z-index: 999999;
+  z-index: 999;
   transition: all 0.2s ease-in-out;
+}
+
+.close {
+  color: #a9a9a9;
+  border-radius: 50%;
+  background: #f1f1f1;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.close:hover {
+  color: #6e6e6e;
+  background: #e6e6e6;
+}
+
+.modal.fade .modal-dialog {
+  -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  -ms-transform: scale(0.7);
+  transform: scale(0.7);
+  opacity: 0;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+
+.modal.fade.show .modal-dialog {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-header {
+  padding: 10px 1rem;
+}
+
+.filelist-area .card-body {
+  max-height: calc(100vh - 6.2rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fileupload-area .card-body {
+  max-height: calc(100vh - 1.5rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fileblock-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 326px);
+  border-radius: 5px;
+  background: #f7f7f7;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #F5F5F5;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: rgb(141, 148, 167);
 }

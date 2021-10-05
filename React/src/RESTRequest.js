@@ -16,25 +16,25 @@ class RESTRequest {
     }
 
     send = (method, apiurl, data) => {
-        var currObj = this;
+        var currInstance = this;
         return new Promise((resolve, reject) => {
             try {
-                currObj.xhr = new XMLHttpRequest();
+                currInstance.xhr = new XMLHttpRequest();
 
                 if (typeof method === 'string')
-                    currObj.method = method.trim().toUpperCase();
+                    currInstance.method = method.trim().toUpperCase();
                 if (typeof apiurl === 'string')
-                    currObj.apiurl = apiurl;
+                    currInstance.apiurl = apiurl;
                 if (typeof data !== 'undefined')
-                    currObj.data = data;
+                    currInstance.data = data;
 
                 var d = "";
                 var dataToSend = null;
 
-                if (currObj.data) {
-                    if (currObj.data instanceof FormData) {
-                        if (currObj.method === "GET") {
-                            if (currObj.isDebug)
+                if (currInstance.data) {
+                    if (currInstance.data instanceof FormData) {
+                        if (currInstance.method === "GET") {
+                            if (currInstance.isDebug)
                                 console.log("FormData with GET method is not allowed");
                             var ed = {
                                 status: 600,
@@ -45,16 +45,16 @@ class RESTRequest {
                                 err: new Error("FormData with GET method is not allowed")
                             };
                             reject(ed);
-                            currObj.clear();
+                            currInstance.clear();
                             return;
                         }
                         dataToSend = this.data;
                     }
-                    else if (currObj.method === "GET")
-                        d = "?" + currObj.prepareQueryStringFromJSON(currObj.data);
+                    else if (currInstance.method === "GET")
+                        d = "?" + currInstance.prepareQueryStringFromJSON(currInstance.data);
                     else {
                         try {
-                            dataToSend = JSON.stringify(currObj.data);
+                            dataToSend = JSON.stringify(currInstance.data);
                         } catch (ex) {
                             var edobj = {
                                 status: 601,
@@ -64,101 +64,101 @@ class RESTRequest {
                                 msg: "Couldn't stringify Json data",
                                 err: ex
                             };
-                            if (currObj.isDebug)
+                            if (currInstance.isDebug)
                                 console.log("Couldn't stringify Json data", ex);
                             reject(edobj);
-                            currObj.clear();
+                            currInstance.clear();
                             return;
                         }
                     }
                 }
 
-                currObj.xhr.onreadystatechange = () => {
-                    if (currObj.xhr.readyState === 4) {
-                        if (currObj.isDebug) console.log("Response " + currObj.xhr.status + ":", currObj.xhr);
-                        if (currObj.xhr.status === 0) return;
-                        if (currObj.xhr.status >= 100 && currObj.xhr.status <= 399)
-                            resolve(currObj.xhrResponsePrettifier(currObj.xhr));
+                currInstance.xhr.onreadystatechange = () => {
+                    if (currInstance.xhr.readyState === 4) {
+                        if (currInstance.isDebug) console.log("Response " + currInstance.xhr.status + ":", currInstance.xhr);
+                        if (currInstance.xhr.status === 0) return;
+                        if (currInstance.xhr.status >= 100 && currInstance.xhr.status <= 399)
+                            resolve(currInstance.xhrResponsePrettifier(currInstance.xhr));
                         else
-                            reject(currObj.xhrResponsePrettifier(currObj.xhr));
-                        currObj.clear();
+                            reject(currInstance.xhrResponsePrettifier(currInstance.xhr));
+                        currInstance.clear();
                     }
                 };
-                currObj.xhr.onerror = () => {
-                    if (currObj.isDebug) console.log("onerror", currObj.xhr);
-                    var x = currObj.xhrResponsePrettifier(currObj.xhr);
+                currInstance.xhr.onerror = () => {
+                    if (currInstance.isDebug) console.log("onerror", currInstance.xhr);
+                    var x = currInstance.xhrResponsePrettifier(currInstance.xhr);
                     x.status = 602;
                     if (!x.msg) x.msg = "Request failed";
                     reject(x);
-                    currObj.clear();
+                    currInstance.clear();
                 };
-                currObj.xhr.ontimeout = () => {
-                    if (currObj.isDebug) console.log("ontimeout", currObj.xhr);
-                    var x = currObj.xhrResponsePrettifier(currObj.xhr);
+                currInstance.xhr.ontimeout = () => {
+                    if (currInstance.isDebug) console.log("ontimeout", currInstance.xhr);
+                    var x = currInstance.xhrResponsePrettifier(currInstance.xhr);
                     x.status = 603;
                     x.msg = "Request timeout";
                     reject(x);
-                    currObj.clear();
+                    currInstance.clear();
                 };
-                currObj.xhr.onabort = () => {
-                    if (currObj.isDebug) console.log("onabort", currObj.xhr);
-                    var x = currObj.xhrResponsePrettifier(currObj.xhr);
+                currInstance.xhr.onabort = () => {
+                    if (currInstance.isDebug) console.log("onabort", currInstance.xhr);
+                    var x = currInstance.xhrResponsePrettifier(currInstance.xhr);
                     x.status = 604;
                     x.msg = "Request aborted";
                     reject(x);
-                    currObj.clear();
+                    currInstance.clear();
                 };
-                currObj.xhr.onprogress = (event) => {
-                    if (currObj.isDebug) console.log("onprogress", event);
-                    if (currObj.xhrDownloadProgressCallback && typeof currObj.xhrDownloadProgressCallback === "function") {
+                currInstance.xhr.onprogress = (event) => {
+                    if (currInstance.isDebug) console.log("onprogress", event);
+                    if (currInstance.xhrDownloadProgressCallback && typeof currInstance.xhrDownloadProgressCallback === "function") {
                         var obj = {
                             totalBytes: event.total,
                             downloadedBytes: event.loaded,
                             percentComplete: (event.loaded / event.total) * 100
                         }
-                        currObj.xhrDownloadProgressCallback(obj);
+                        currInstance.xhrDownloadProgressCallback(obj);
                     }
                 };
 
-                currObj.xhr.upload.onload = () => {
+                currInstance.xhr.upload.onload = () => {
                 };
-                currObj.xhr.upload.onerror = () => {
+                currInstance.xhr.upload.onerror = () => {
                     console.log("upload.onerror");
                 };
-                currObj.xhr.upload.onabort = () => {
+                currInstance.xhr.upload.onabort = () => {
                 };
-                currObj.xhr.upload.onprogress = (event) => {
-                    if (currObj.isDebug) console.log("upload.onprogress", event);
-                    if (currObj.xhrUploadProgressCallback && typeof currObj.xhrUploadProgressCallback === "function") {
+                currInstance.xhr.upload.onprogress = (event) => {
+                    if (currInstance.isDebug) console.log("upload.onprogress", event);
+                    if (currInstance.xhrUploadProgressCallback && typeof currInstance.xhrUploadProgressCallback === "function") {
                         var obj = {
                             totalBytes: event.total,
                             uploadedBytes: event.loaded,
                             percentComplete: (event.loaded / event.total) * 100
                         }
-                        currObj.xhrUploadProgressCallback(obj);
+                        currInstance.xhrUploadProgressCallback(obj);
                     }
                 };
-                currObj.xhr.open(currObj.method, currObj.apiurl + d, true);
+                currInstance.xhr.open(currInstance.method, currInstance.apiurl + d, true);
 
-                if (currObj.responseType)
-                    currObj.xhr.responseType = currObj.responseType;
-                if (currObj.timeout && /^\+?(0|[1-9]\d*)$/.test(currObj.timeout))
-                    currObj.xhr.timeout = currObj.timeout;
+                if (currInstance.responseType)
+                    currInstance.xhr.responseType = currInstance.responseType;
+                if (currInstance.timeout && /^\+?(0|[1-9]\d*)$/.test(currInstance.timeout))
+                    currInstance.xhr.timeout = currInstance.timeout;
 
-                if (currObj.headers && Array.isArray(currObj.headers) && currObj.headers.length > 0) {
-                    currObj.headers.map(x => {
-                        currObj.xhr.setRequestHeader(x.key, x.value);
+                if (currInstance.headers && Array.isArray(currInstance.headers) && currInstance.headers.length > 0) {
+                    currInstance.headers.map(x => {
+                        currInstance.xhr.setRequestHeader(x.key, x.value);
                         return null;
                     });
                 }
 
-                currObj.xhr.send(dataToSend);
+                currInstance.xhr.send(dataToSend);
 
-                if (currObj.isDebug)
+                if (currInstance.isDebug)
                     console.log("XHR Started");
 
             } catch (e) {
-                if (currObj.isDebug) console.log("Exception in send", e);
+                if (currInstance.isDebug) console.log("Exception in send", e);
                 reject({
                     status: 605,
                     statusText: "",
@@ -167,7 +167,7 @@ class RESTRequest {
                     msg: "Error while processing request",
                     err: e
                 });
-                currObj.clear();
+                currInstance.clear();
             }
         });
     }

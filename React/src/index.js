@@ -1,4 +1,6 @@
+import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { restRequest } from './RESTRequest';
@@ -8,6 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
+import { MessageBoxContainer, MessageBoxService } from './messagebox';
 
 const reloadListRequestSubject = new BehaviorSubject(null);
 const reloadListRequestObservable = reloadListRequestSubject.asObservable();
@@ -155,8 +158,12 @@ class MultipleFileUpload extends React.Component {
         });
 
         this.setState({ uploadStatus: "InProgress" });
-        Promise.all(promises).then(results => {
+        Promise.all(promises).then(() => {
             this.setState({ uploadStatus: "Done" });
+            let successCnt = this.state.selectedFiles.filter(x => x.status === "Uploaded").length;
+            let totalCnt = this.state.selectedFiles.length;
+            if (totalCnt !== successCnt) MessageBoxService.info("Uploaded", "<b>" + successCnt + "</b> of <b>" + totalCnt + "</b> files successfully uploaded to the server.");
+            else MessageBoxService.success("Hurray!!", "All the file are successfully uploaded to server.");
         });
     };
 
@@ -199,9 +206,11 @@ class MultipleFileUpload extends React.Component {
                                     aborted={this.state.selectedFiles.filter(x => x.status === "Aborted").length} />
                             </>
                         }
-                        {
-                            this.state.selectedFiles.map(e => { return <FileBlock key={e.id} obj={e} onRemove={this.onRemoveSelectedFile} onAbort={this.onAbort} /> })
-                        }
+                        <div className="fileblock-area">
+                            {
+                                this.state.selectedFiles.map(e => { return <FileBlock key={e.id} obj={e} onRemove={this.onRemoveSelectedFile} onAbort={this.onAbort} /> })
+                            }
+                        </div>
                     </div>
                 </div>
             </div >
@@ -316,7 +325,7 @@ class FileBlock extends React.Component {
                             <div className="col-sm-8">
                                 <span className="text-muted" style={{ fontSize: 14, fontWeight: 600 }}>{this.props.obj.name}</span>
                             </div>
-                            <div className="col-sm-4 text-right">
+                            <div className="col-sm-4 text-end">
                                 {this.props.obj.status === "Uploading" && <button type="button" onClick={() => this.props.onAbort(this.props.obj.request)} className="btn btn-sm btn-danger"><i className="fas fa-times-circle"></i>&nbsp;Abort</button>}
                             </div>
                         </div>
@@ -331,7 +340,7 @@ class FileBlock extends React.Component {
                             <div className="col-sm-6">
                                 <span className={this.props.obj.statusTextColorClass} style={{ fontSize: 14, fontWeight: 700 }}>{this.props.obj.status}</span>
                             </div>
-                            <div className="col-sm-6 text-right text-muted" style={{ fontSize: 11, fontWeight: 600 }}>
+                            <div className="col-sm-6 text-end text-muted" style={{ fontSize: 11, fontWeight: 600 }}>
                                 {this.props.obj.uploaded} of {this.props.obj.formattedSize}
                             </div>
                         </div>
@@ -397,10 +406,7 @@ class FileList extends React.Component {
     getFileNameFromPath = (file) => file.split('\\').pop().split('/').pop();
 
     donwloadFile = obj => {
-        this.setState(prevState => ({
-            data: prevState.data.map(el => el.path === obj.path ? { ...el, isDownloading: true, percentComplete: 0 } : el)
-        }));
-        restRequest({
+        let req = restRequest({
             url: apiUrlFileDownload,
             data: { filename: obj.name },
             method: "GET",
@@ -417,7 +423,8 @@ class FileList extends React.Component {
                 window.URL.revokeObjectURL(url);
             },
             onError: (res) => {
-                toast.error("Some error occured while downloading file.");
+                if (res && res.status !== 604)
+                    toast.error("Some error occured while downloading file.");
             },
             onDownloadProgress: (p) => {
                 this.setState(prevState => ({
@@ -430,78 +437,89 @@ class FileList extends React.Component {
                 }));
             },
         });
+        this.setState(prevState => ({
+            data: prevState.data.map(el => el.path === obj.path ? { ...el, isDownloading: true, percentComplete: 0, request: req } : el)
+        }));
     };
 
+    cancelDownload = req => {
+        req.abort();
+    };
 
     deleteFile = obj => {
-        this.setState(prevState => ({
-            data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: true } : el)
-        }));
-        restRequest({
-            url: apiUrlFileDelete,
-            data: obj.name,
-            method: "DELETE",
-            isJson: true,
-            onSuccess: (res) => {
-                if (res.status === 200)
-                    this.getList();
-            },
-            onError: (res) => {
-                console.log(res);
-                toast.error("Some error occured while deleting file.");
-            },
-            onComplete: () => {
-                this.setState(prevState => ({
-                    data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: false } : el)
-                }));
-            },
+        MessageBoxService.confirmYesNo("Please confirm", "Are you sure you want to delete file from the server?<br/><small class='text-danger'><i>What's done cannot be undone.</i></small>", () => {
+            this.setState(prevState => ({
+                data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: true } : el)
+            }));
+            restRequest({
+                url: apiUrlFileDelete,
+                data: obj.name,
+                method: "DELETE",
+                isJson: true,
+                onSuccess: (res) => {
+                    if (res.status === 200)
+                        this.getList();
+                },
+                onError: (res) => {
+                    console.log(res);
+                    toast.error("Some error occured while deleting file.");
+                },
+                onComplete: () => {
+                    this.setState(prevState => ({
+                        data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: false } : el)
+                    }));
+                },
+            });
         });
-
     };
 
     render = () => {
         const fileBlock =
-            <div className="row">
-                <div className="col-sm-12">
-                    {
-                        this.state.data.map((obj, i) =>
-                            <div key={i} className="file-block">
-                                {
-                                    obj.isDownloading &&
-                                    <div className="file-block-progress-bar" style={{ width: obj.percentComplete + "%" }}></div>
-                                }
-                                <div className="row">
-                                    <div className="col-sm-10">
-                                        <span className="text-muted" style={{ fontSize: 14, fontWeight: 600 }}>{obj.name}</span>
-                                        <div className="text-muted" style={{ fontSize: 12 }}><b>Size: </b>{formatBytes(obj.size)}</div>
-                                        <div className="text-muted" style={{ fontSize: 12 }}>Created {moment(obj.createdAt).fromNow()}, Last modified {moment(obj.lastModified).fromNow()}</div>
-                                    </div>
-                                    <div className="col-sm-2">
-                                        {
-                                            !obj.isDownloading && !obj.isDeleting &&
-                                            <div className="icon-btn text-danger ml-1" onClick={() => this.deleteFile(obj)}>
-                                                <i className="fa fa-times" aria-hidden="true"></i>
-                                            </div>
-                                        }
-                                        {
-                                            !obj.isDownloading && !obj.isDeleting &&
-                                            <div className="icon-btn text-success" onClick={() => this.donwloadFile(obj)}>
-                                                <i className="fa fa-download" aria-hidden="true"></i>
-                                            </div>
-                                        }
-                                        {
-                                            obj.isDeleting &&
-                                            <div className="icon-btn text-warning ml-1">
-                                                <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>
-                                            </div>
-                                        }
-                                    </div>
+            <>
+                {
+                    this.state.data.map((obj, i) =>
+                        <div key={i} className="file-block">
+                            {
+                                obj.isDownloading &&
+                                <div className="file-block-progress-bar" style={{ width: obj.percentComplete + "%" }}></div>
+                            }
+                            <div className="row" style={{ position: "inherit" }}>
+                                <div className="col-sm-10">
+                                    <span className="text-muted" style={{ fontSize: 14, fontWeight: 600 }}>{obj.name}</span>
+                                    <div className="text-muted" style={{ fontSize: 12 }}><b>Size: </b>{formatBytes(obj.size)}</div>
+                                    <div className="text-muted" style={{ fontSize: 12 }}>Created {moment(obj.createdAt).fromNow()}, Last modified {moment(obj.lastModified).fromNow()}</div>
+                                </div>
+                                <div className="col-sm-2">
+                                    {
+                                        !obj.isDownloading && !obj.isDeleting &&
+                                        <div className="icon-btn text-danger ms-1" onClick={() => this.deleteFile(obj)}>
+                                            <i className="fa fa-times" aria-hidden="true"></i>
+                                        </div>
+                                    }
+                                    {
+                                        !obj.isDownloading && !obj.isDeleting &&
+                                        <div className="icon-btn text-success" onClick={() => this.donwloadFile(obj)}>
+                                            <i className="fa fa-download" aria-hidden="true"></i>
+                                        </div>
+                                    }
+                                    {
+                                        obj.isDownloading &&
+                                        <div className="icon-btn text-danger" onClick={() => this.cancelDownload(obj.request)}>
+                                            <i className="fa fa-times" aria-hidden="true"></i>
+                                        </div>
+                                    }
+                                    {
+                                        obj.isDeleting &&
+                                        <div className="icon-btn text-warning ms-1">
+                                            <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                                        </div>
+                                    }
                                 </div>
                             </div>
-                        )
-                    }
-                </div>
-            </div>
+                        </div>
+                    )
+                }
+            </>
 
         const noContentBlock = !this.state.isLoading && this.state.data.length === 0 &&
             <div className="row">
@@ -539,10 +557,10 @@ class App extends React.Component {
             <>
                 <div className="container">
                     <div className="row">
-                        <div className="col-7">
+                        <div className="col-7 filelist-area">
                             <FileList />
                         </div>
-                        <div className="col-5">
+                        <div className="col-5 fileupload-area">
                             <MultipleFileUpload />
                         </div>
                     </div>
@@ -557,6 +575,7 @@ class App extends React.Component {
                     pauseOnFocusLoss
                     draggable
                     pauseOnHover />
+                <MessageBoxContainer />
             </>
         );
     }
