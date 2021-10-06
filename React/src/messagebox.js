@@ -222,7 +222,7 @@ class MessageBox extends React.Component {
     render = () => {
         const isHideFooter = !this.props.isCancel && !this.props.isOk && !this.props.isYes && !this.props.isNo;
         const iconBlock = this.props.isShowIcon &&
-            <div className="text-center mt-0" style={{ fontSize: 5 + "rem", lineHeight: 5 + "rem", opacity: 0.5 }}>
+            <div className="text-center mt-0 animate__animated animate__jackInTheBox" style={{ fontSize: 5 + "rem", lineHeight: 5 + "rem", opacity: 0.5 }}>
                 {
                     this.props.icon === "success" && <i className="fas fa-check-circle text-success"></i>
                 }
@@ -270,7 +270,7 @@ class MessageBox extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title">{this.props.title}</h5>
-                            <span className="close m1-2" onClick={() => this.closePopup()}><i className="fas fa-times close-size"></i></span>
+                            <span className="close m1-2" onClick={this.closePopup}><i className="fas fa-times close-size"></i></span>
                         </div>
                         <div className="modal-body">
                             {body}

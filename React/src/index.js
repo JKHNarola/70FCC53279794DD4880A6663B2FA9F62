@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
+import "animate.css";
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -180,10 +181,7 @@ class MultipleFileUpload extends React.Component {
             <div className="main-area mt-4">
                 <div className="card">
                     <div className="card-body">
-                        {
-                            this.state.uploadStatus === "Init" &&
-                            <BrowseOrDropFiles onFilesSelected={this.onFilesSelected} />
-                        }
+                        <BrowseOrDropFiles disabled={this.state.uploadStatus !== "Init"} onFilesSelected={this.onFilesSelected} />
                         {
                             this.state.selectedFiles.length > 0 &&
                             <>
@@ -206,11 +204,14 @@ class MultipleFileUpload extends React.Component {
                                     aborted={this.state.selectedFiles.filter(x => x.status === "Aborted").length} />
                             </>
                         }
-                        <div className="fileblock-area">
-                            {
-                                this.state.selectedFiles.map(e => { return <FileBlock key={e.id} obj={e} onRemove={this.onRemoveSelectedFile} onAbort={this.onAbort} /> })
-                            }
-                        </div>
+                        {
+                            this.state.selectedFiles.length > 0 &&
+                            <div className="fileblock-area">
+                                {
+                                    this.state.selectedFiles.map((e, i) => { return <FileBlock style={{ marginBottom: (i === (this.state.selectedFiles.length - 1)) ? 0 : 0.5 + "rem" }} key={e.id} obj={e} onRemove={this.onRemoveSelectedFile} onAbort={this.onAbort} /> })
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
             </div >
@@ -268,8 +269,11 @@ class BrowseOrDropFiles extends React.Component {
         return (
             <div className="row">
                 <div className="col-sm-12">
-                    <input multiple ref={this.inputRef} style={{ display: "none" }} className="form-control" type="file" onChange={this.onFileChange} />
+                    <input multiple disabled={this.props.disabled} ref={this.inputRef} style={{ display: "none" }} className="form-control" type="file" onChange={this.onFileChange} />
                     <div className="browse-area" onClick={this.onBrowseClick}>
+                        {
+                            this.props.disabled && <div className="browse-area-disabled"></div>
+                        }
                         {
                             !this.state.dragging &&
                             <div className="text-center browse-text">
@@ -312,7 +316,7 @@ class UploadStatusCounts extends React.Component {
 class FileBlock extends React.Component {
     render = () => {
         return (
-            <div className="row">
+            <div className="row" style={this.props.style}>
                 <div className="col-sm-12">
                     <div className={'file-block ' + this.props.obj.borderClass} style={{ background: this.props.obj.backgroundColor }}>
                         {
@@ -478,7 +482,7 @@ class FileList extends React.Component {
             <>
                 {
                     this.state.data.map((obj, i) =>
-                        <div key={i} className="file-block">
+                        <div key={i} className="file-block" style={{ marginBottom: i === (this.state.data.length - 1) ? 0 : 0.5 + "rem" }}>
                             {
                                 obj.isDownloading &&
                                 <div className="file-block-progress-bar" style={{ width: obj.percentComplete + "%" }}></div>
@@ -557,10 +561,10 @@ class App extends React.Component {
             <>
                 <div className="container">
                     <div className="row">
-                        <div className="col-7 filelist-area">
+                        <div className="col-6 filelist-area">
                             <FileList />
                         </div>
-                        <div className="col-5 fileupload-area">
+                        <div className="col-6 fileupload-area">
                             <MultipleFileUpload />
                         </div>
                     </div>

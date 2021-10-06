@@ -42,7 +42,6 @@ img {
 .file-block {
   padding: 10px;
   background: whitesmoke;
-  margin-bottom: 10px;
   border-radius: 5px;
   border: 1px solid rgb(177, 177, 177);
   position: relative;
@@ -104,11 +103,11 @@ img {
 }
 
 .icon-btn.text-success:hover {
-  color: #33c956 !important;
+  color: #29a36a !important;
 }
 
 .icon-btn.text-danger:hover {
-  color: #fa2c41 !important;
+  color: #ff5e6e !important;
 }
 
 .file-block-progress-bar {
@@ -140,13 +139,13 @@ img {
   height: 30px;
   width: 30px;
   text-align: center;
-  line-height: 30px;
+  line-height: 32px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
 }
 
 .close:hover {
-  color: #6e6e6e;
+  color: #ff5e6e;
   background: #e6e6e6;
 }
 
@@ -174,7 +173,7 @@ img {
 }
 
 .filelist-area .card-body {
-  max-height: calc(100vh - 6.2rem);
+  max-height: calc(100vh - 5.7rem);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -190,12 +189,13 @@ img {
   overflow-x: hidden;
   max-height: calc(100vh - 326px);
   border-radius: 5px;
-  background: #f7f7f7;
+  background: #fcfcfc;
+  padding: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
   background-color: #F5F5F5;
-  border-radius: 10px;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar {
@@ -206,4 +206,27 @@ img {
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background-color: rgb(141, 148, 167);
+  transition: all 0.2s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(117, 122, 136);
+}
+
+.browse-area-disabled {
+  background: #ffffffa1;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 101;
+  cursor: not-allowed;
+}
+
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 500;
+  line-height: 1.2;
 }
