@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
-import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js';
+import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import React from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { v1 as uuidv1 } from 'uuid';
@@ -17,7 +17,7 @@ const removeMessageBoxRequest = (id) => {
     removeMessageBoxRequestSubject.next(id);
 };
 
-export const MessageBoxService = {
+export const MessageBox = {
     /**
      * Opens new messagebox with customizable settings through config object as parameter.
      * config object can have below properties 
@@ -143,6 +143,14 @@ export class MessageBoxContainer extends React.Component {
     }
 
     componentDidMount = () => {
+        this.subscribeForEvents();
+    };
+
+    componentWillUnmount = () => {
+        this.unsubscribeForEvents();
+    };
+
+    subscribeForEvents = () => {
         this.addBoxSubscription = newMessageBoxRequestObservable.subscribe(config => {
             if (config && typeof config === "object") {
                 config.id = uuidv1();
@@ -154,11 +162,11 @@ export class MessageBoxContainer extends React.Component {
             if (id)
                 setTimeout(() => {
                     this.setState(prevstate => ({ messageBoxList: prevstate.messageBoxList.filter(item => item.id !== id) }));
-                }, 500);
+                }, 1000);
         });
     };
 
-    componentWillUnmount = () => {
+    unsubscribeForEvents = () => {
         this.addBoxSubscription.unsubscribe();
         this.removeBoxSubscription.unsubscribe();
     };
@@ -166,54 +174,56 @@ export class MessageBoxContainer extends React.Component {
     render = () => {
         return <div id="messageboxarea">
             {
-                this.state.messageBoxList.map(x => {
-                    return <MessageBox
+                this.state.messageBoxList.map(x =>
+                    <MessageBoxModalPopup
                         key={x.id}
                         id={x.id}
-                        onOK={x.onOK}
-                        onCancel={x.onCancel}
-                        onYes={x.onYes}
-                        onNo={x.onNo}
-                        isShowIcon={x.isShowIcon}
-                        icon={x.icon}
                         title={x.title}
                         message={x.message}
-                        isCancel={x.isCancel}
+                        isShowIcon={x.isShowIcon}
+                        icon={x.icon}
                         isDisableKeyboard={x.isDisableKeyboard}
                         isDisableBackdrop={x.isDisableBackdrop}
                         isOk={x.isOk}
+                        isCancel={x.isCancel}
                         isNo={x.isNo}
-                        isYes={x.isYes} />
-                })
+                        isYes={x.isYes}
+                        onOK={x.onOK}
+                        onCancel={x.onCancel}
+                        onYes={x.onYes}
+                        onNo={x.onNo} />
+                )
             }
         </div>
-    }
+    };
 }
 
-class MessageBox extends React.Component {
+class MessageBoxModalPopup extends React.Component {
     componentDidMount = () => {
+        this.open();
+    };
+
+    open = () => {
         this.bsmodal = new bootstrap.Modal(this.modal, { backdrop: this.props.isDisableBackdrop === true ? 'static' : true, keyboard: !this.props.isDisableKeyboard, focus: true });
         this.bsmodal.show();
     };
 
-    closePopup = res => {
-        if (typeof res !== 'undefined') {
-            switch (res) {
-                case "ok":
-                    this.props.onOK && typeof this.props.onOK === "function" && this.props.onOK();
-                    break;
-                case "cancel":
-                    this.props.onCancel && typeof this.props.onCancel === "function" && this.props.onCancel();
-                    break;
-                case "yes":
-                    this.props.onYes && typeof this.props.onYes === "function" && this.props.onYes();
-                    break;
-                case "no":
-                    this.props.onNo && typeof this.props.onNo === "function" && this.props.onNo();
-                    break;
-                default:
-                    break;
-            }
+    close = res => {
+        switch (res) {
+            case "ok":
+                this.props.onOK && typeof this.props.onOK === "function" && this.props.onOK();
+                break;
+            case "cancel":
+                this.props.onCancel && typeof this.props.onCancel === "function" && this.props.onCancel();
+                break;
+            case "yes":
+                this.props.onYes && typeof this.props.onYes === "function" && this.props.onYes();
+                break;
+            case "no":
+                this.props.onNo && typeof this.props.onNo === "function" && this.props.onNo();
+                break;
+            default:
+                break;
         }
         this.bsmodal.hide();
         removeMessageBoxRequest(this.props.id);
@@ -251,16 +261,16 @@ class MessageBox extends React.Component {
         const footerButtons =
             <>
                 {
-                    this.props.isCancel && <button tabIndex={2} onClick={() => this.closePopup('cancel')} type="button" className="btn btn-secondary float-right">Cancel</button>
+                    this.props.isCancel && <button tabIndex={2} onClick={() => this.close('cancel')} type="button" className="btn btn-secondary float-right">Cancel</button>
                 }
                 {
-                    this.props.isOk && <button tabIndex={1} onClick={() => this.closePopup('ok')} type="button" className="btn btn-primary float-right">OK</button>
+                    this.props.isOk && <button tabIndex={1} onClick={() => this.close('ok')} type="button" className="btn btn-primary float-right">OK</button>
                 }
                 {
-                    this.props.isNo && <button tabIndex={2} onClick={() => this.closePopup('no')} type="button" className="btn btn-secondary float-right">No</button>
+                    this.props.isNo && <button tabIndex={2} onClick={() => this.close('no')} type="button" className="btn btn-secondary float-right">No</button>
                 }
                 {
-                    this.props.isYes && <button tabIndex={1} onClick={() => this.closePopup('yes')} type="button" className="btn btn-primary float-right">Yes</button>
+                    this.props.isYes && <button tabIndex={1} onClick={() => this.close('yes')} type="button" className="btn btn-primary float-right">Yes</button>
                 }
             </>;
 
@@ -270,7 +280,7 @@ class MessageBox extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title">{this.props.title}</h5>
-                            <span className="close m1-2" onClick={this.closePopup}><i className="fas fa-times close-size"></i></span>
+                            <span className="close m1-2" onClick={this.close}><i className="fas fa-times close-size"></i></span>
                         </div>
                         <div className="modal-body">
                             {body}
@@ -287,4 +297,3 @@ class MessageBox extends React.Component {
         </>;
     };
 }
-

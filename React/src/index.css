@@ -102,11 +102,19 @@ img {
   transition: all 0.1s ease-in-out;
 }
 
-.icon-btn.text-success:hover {
+.icon-btn.text-success>i::before {
+  color: #198754 !important;
+}
+
+.icon-btn.text-success:hover>i::before {
   color: #29a36a !important;
 }
 
-.icon-btn.text-danger:hover {
+.icon-btn.text-danger>i::before {
+  color: #dc3545 !important;
+}
+
+.icon-btn.text-danger:hover>i::before {
   color: #ff5e6e !important;
 }
 
@@ -189,7 +197,7 @@ img {
   overflow-x: hidden;
   max-height: calc(100vh - 326px);
   border-radius: 5px;
-  background: #fcfcfc;
+  background: #e8e8e8;
   padding: 0.5rem;
 }
 
@@ -229,4 +237,8 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   margin-bottom: 0;
   font-weight: 500;
   line-height: 1.2;
+}
+
+.modal.fade.show {
+  display: block;
 }

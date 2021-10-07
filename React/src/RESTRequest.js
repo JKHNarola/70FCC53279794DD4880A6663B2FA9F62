@@ -152,6 +152,9 @@ class RESTRequest {
                     });
                 }
 
+                currInstance.xhr.setRequestHeader("Expires", "Tue, 01 Jan 1980 1:00:00 GMT");
+                currInstance.xhr.setRequestHeader("Pragma", "no-cache");
+
                 currInstance.xhr.send(dataToSend);
 
                 if (currInstance.isDebug)

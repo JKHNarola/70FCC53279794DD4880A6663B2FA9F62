@@ -1,3 +1,4 @@
+import './polyfills.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import "animate.css";
@@ -8,10 +9,8 @@ import { restRequest } from './RESTRequest';
 import { v1 as uuidv1 } from 'uuid';
 import * as mime from 'mime';
 import { BehaviorSubject } from 'rxjs';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
-import { MessageBoxContainer, MessageBoxService } from './messagebox';
+import { MessageBoxContainer, MessageBox } from './messagebox';
 
 const reloadListRequestSubject = new BehaviorSubject(null);
 const reloadListRequestObservable = reloadListRequestSubject.asObservable();
@@ -163,8 +162,9 @@ class MultipleFileUpload extends React.Component {
             this.setState({ uploadStatus: "Done" });
             let successCnt = this.state.selectedFiles.filter(x => x.status === "Uploaded").length;
             let totalCnt = this.state.selectedFiles.length;
-            if (totalCnt !== successCnt) MessageBoxService.info("Uploaded", "<b>" + successCnt + "</b> of <b>" + totalCnt + "</b> files successfully uploaded to the server.");
-            else MessageBoxService.success("Hurray!!", "All the file are successfully uploaded to server.");
+            if (totalCnt !== successCnt) MessageBox.info("Uploaded", "<b>" + successCnt + "</b> of <b>" + totalCnt + "</b> files successfully uploaded to the server.");
+            else if (successCnt === 0) MessageBox.error("Failed", "All the files failed to upload.");
+            else MessageBox.success("Hurray!!", "All the file are successfully uploaded to server.");
         });
     };
 
@@ -399,7 +399,7 @@ class FileList extends React.Component {
                 this.setState({ data: lst });
             },
             onError: (res) => {
-                if (res.status !== 604) toast.error("Some error occured while getting list of files.");
+                if (res.status !== 604) MessageBox.error("Error occurred", "Some error occured while getting list of files. Please refresh page to try again.");
             },
             onComplete: () => {
                 this.setState({ isLoading: false });
@@ -414,21 +414,28 @@ class FileList extends React.Component {
             url: apiUrlFileDownload,
             data: { filename: obj.name },
             method: "GET",
+            isDebug: true,
             responseType: "arraybuffer",
             onSuccess: (res) => {
-                var blob = new Blob([res.response], { type: mime.getType(obj.name.split('.').pop().toString().toLowerCase()) });
-                var url = URL.createObjectURL(blob);
-                var a = document.createElement("a");
-                document.body.appendChild(a);
-                a.style = "display: none";
-                a.href = url;
-                a.download = obj.name;
-                a.click();
-                window.URL.revokeObjectURL(url);
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    let blob = new Blob([res.response], { type: mime.getType(obj.name.split('.').pop().toString().toLowerCase()) });
+                    window.navigator.msSaveOrOpenBlob(blob, obj.name);
+                }
+                else {
+                    let bl = new Blob([res.response], { type: mime.getType(obj.name.split('.').pop().toString().toLowerCase()) });
+                    let url = URL.createObjectURL(bl);
+                    let a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+                    a.href = url;
+                    a.download = obj.name;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                }
             },
             onError: (res) => {
                 if (res && res.status !== 604)
-                    toast.error("Some error occured while downloading file.");
+                    MessageBox.error("Error occurred", "Some error occured while downloading file. Please try again.");
             },
             onDownloadProgress: (p) => {
                 this.setState(prevState => ({
@@ -451,7 +458,7 @@ class FileList extends React.Component {
     };
 
     deleteFile = obj => {
-        MessageBoxService.confirmYesNo("Please confirm", "Are you sure you want to delete file from the server?<br/><small class='text-danger'><i>What's done cannot be undone.</i></small>", () => {
+        MessageBox.confirmYesNo("Please confirm", "Are you sure you want to delete file from the server?<br/><small class='text-danger'><i>What's done cannot be undone.</i></small>", () => {
             this.setState(prevState => ({
                 data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: true } : el)
             }));
@@ -461,12 +468,12 @@ class FileList extends React.Component {
                 method: "DELETE",
                 isJson: true,
                 onSuccess: (res) => {
-                    if (res.status === 200)
+                    if (res.status === 200) {
                         this.getList();
+                    }
                 },
-                onError: (res) => {
-                    console.log(res);
-                    toast.error("Some error occured while deleting file.");
+                onError: () => {
+                    MessageBox.error("Error occurred", "Some error occured while deleting file. Please try again.");
                 },
                 onComplete: () => {
                     this.setState(prevState => ({
@@ -569,16 +576,6 @@ class App extends React.Component {
                         </div>
                     </div>
                 </div>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover />
                 <MessageBoxContainer />
             </>
         );
