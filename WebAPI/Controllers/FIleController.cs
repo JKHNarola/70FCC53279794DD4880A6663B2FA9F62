@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -106,20 +107,26 @@ namespace WebAPI.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public IActionResult Delete([FromBody] string filename)
+        public IActionResult Delete([FromBody] List<string> filenames)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(filename))
-                    return BadRequest();
+                var listFolders = new List<string>();
+                foreach (var x in filenames)
+                {
+                    if (string.IsNullOrWhiteSpace(x))
+                        return BadRequest(x);
 
-                var folderName = Path.Combine("Resources", "Files");
-                var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                var filepath = Path.Combine(pathToFolder, filename);
-                if (!System.IO.File.Exists(filepath))
-                    return NotFound();
+                    var folderName = Path.Combine("Resources", "Files");
+                    var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    var filepath = Path.Combine(pathToFolder, x);
+                    if (!System.IO.File.Exists(filepath))
+                        return NotFound(filepath);
 
-                System.IO.File.Delete(filepath);
+                    listFolders.Add(filepath);
+                };
+
+                listFolders.ForEach(x => { System.IO.File.Delete(x); });
                 return Ok();
             }
             catch (Exception ex)

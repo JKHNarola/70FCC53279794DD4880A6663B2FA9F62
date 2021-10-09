@@ -1,6 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
-import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import React from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { v1 as uuidv1 } from 'uuid';
@@ -204,8 +201,13 @@ class MessageBoxModalPopup extends React.Component {
     };
 
     open = () => {
-        this.bsmodal = new bootstrap.Modal(this.modal, { backdrop: this.props.isDisableBackdrop === true ? 'static' : true, keyboard: !this.props.isDisableKeyboard, focus: true });
-        this.bsmodal.show();
+        let that = this;
+        window.$("#" + this.props.id).modal({
+            show: true,
+            keyboard: !that.props.isDisableKeyboard,
+            backdrop: that.props.isDisableBackdrop === true ? 'static' : true,
+            focus: true
+        });
     };
 
     close = res => {
@@ -225,7 +227,7 @@ class MessageBoxModalPopup extends React.Component {
             default:
                 break;
         }
-        this.bsmodal.hide();
+        window.$("#" + this.props.id).modal('hide');
         removeMessageBoxRequest(this.props.id);
     };
 

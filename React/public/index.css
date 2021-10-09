@@ -7,7 +7,7 @@ img {
 
 .browse-area {
   position: relative;
-  background: #e1e8ef;
+  background: rgba(225, 232, 239, 1.0);
   width: 100%;
   height: 150px;
   padding: 5px;
@@ -16,7 +16,7 @@ img {
 }
 
 .browse-area:hover {
-  background: #d3dee9;
+  background: rgba(211, 222, 233, 1.0);
 }
 
 .browse-box {
@@ -24,9 +24,9 @@ img {
   height: calc(100% - 10px);
   width: calc(100% - 10px);
   text-align: center;
-  border: 1px dashed #234971;
+  border: 1px dashed rgba(35, 73, 113, 1.0);
   padding: 50px;
-  color: #234971;
+  color: rgba(35, 73, 113, 1.0);
   z-index: 100;
   transition: all 0.1s ease-in-out;
 }
@@ -65,14 +65,14 @@ img {
 }
 
 .main-status-box {
-  border: 1px solid #e2e2e2;
+  border: 1px solid rgba(226, 226, 226, 1.0);
   padding: 5px;
   border-radius: 5px;
   font-size: 14px;
   font-weight: 600;
   text-align: center;
   line-height: 18px;
-  background: #e8e8e8;
+  background: rgba(232, 232, 232, 1.0);
   margin-bottom: 10px;
 }
 
@@ -99,30 +99,31 @@ img {
   float: right;
   text-align: center;
   line-height: 28px;
+  margin-left: 5px;
   transition: all 0.1s ease-in-out;
 }
 
 .icon-btn.text-success>i::before {
-  color: #198754 !important;
+  color: rgba(25, 135, 84, 1.0) !important;
 }
 
 .icon-btn.text-success:hover>i::before {
-  color: #29a36a !important;
+  color: rgba(41, 163, 106, 1.0) !important;
 }
 
 .icon-btn.text-danger>i::before {
-  color: #dc3545 !important;
+  color: rgba(220, 53, 69, 1.0) !important;
 }
 
 .icon-btn.text-danger:hover>i::before {
-  color: #ff5e6e !important;
+  color: rgba(255, 94, 110, 1.0) !important;
 }
 
 .file-block-progress-bar {
   position: absolute;
   height: 100%;
   width: 0%;
-  background: #e0e0e0;
+  background: rgba(224, 224, 224, 1.0);
   top: 0;
   left: 0;
   border-radius: 4px;
@@ -135,26 +136,27 @@ img {
   width: 100%;
   top: 0;
   left: 0;
-  background: #ffffffde;
+  background: rgba(255, 255, 255, 0.87);
   z-index: 999;
   transition: all 0.2s ease-in-out;
 }
 
 .close {
-  color: #a9a9a9;
+  color: rgba(169, 169, 169, 1.0);
   border-radius: 50%;
-  background: #f1f1f1;
+  background: rgba(241, 241, 241, 1.0);
   height: 30px;
   width: 30px;
   text-align: center;
   line-height: 32px;
+  font-size: 18px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
 }
 
 .close:hover {
-  color: #ff5e6e;
-  background: #e6e6e6;
+  color: rgb(99, 91, 92);
+  background: rgba(230, 230, 230, 1.0);
 }
 
 .modal.fade .modal-dialog {
@@ -197,18 +199,18 @@ img {
   overflow-x: hidden;
   max-height: calc(100vh - 326px);
   border-radius: 5px;
-  background: #e8e8e8;
+  background: rgba(232, 232, 232, 1.0);
   padding: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #F5F5F5;
+  background-color: rgba(245, 245, 245, 1.0);
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
-  background-color: #F5F5F5;
+  background-color: rgba(245, 245, 245, 1.0);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -222,7 +224,7 @@ img {
 }
 
 .browse-area-disabled {
-  background: #ffffffa1;
+  background: rgba(255, 255, 255, 0.63);
   position: absolute;
   height: 100%;
   width: 100%;
@@ -239,6 +241,11 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   line-height: 1.2;
 }
 
-.modal.fade.show {
-  display: block;
+.modal-header .close {
+  padding: 0;
+  margin: 0;
+}
+
+.btn-group-sm>.btn, .btn-sm {
+  font-size: .675rem;
 }

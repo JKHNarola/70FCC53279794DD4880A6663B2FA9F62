@@ -1,6 +1,4 @@
 import './polyfills.js';
-import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
 import "animate.css";
 
 import React from 'react';
@@ -25,7 +23,7 @@ const formatBytes = (bytes, decimals = 2) => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i];
 };
-const apiBaseUrl = "https://localhost:5001/api/";
+const apiBaseUrl = "http://localhost:5000/api/";
 const apiUrlFileUpload = apiBaseUrl + "file/upload";
 const apiUrlFileDownload = apiBaseUrl + "file/download";
 const apiUrlFileList = apiBaseUrl + "file/list";
@@ -329,7 +327,7 @@ class FileBlock extends React.Component {
                             <div className="col-sm-8">
                                 <span className="text-muted" style={{ fontSize: 14, fontWeight: 600 }}>{this.props.obj.name}</span>
                             </div>
-                            <div className="col-sm-4 text-end">
+                            <div className="col-sm-4 text-right">
                                 {this.props.obj.status === "Uploading" && <button type="button" onClick={() => this.props.onAbort(this.props.obj.request)} className="btn btn-sm btn-danger"><i className="fas fa-times-circle"></i>&nbsp;Abort</button>}
                             </div>
                         </div>
@@ -344,7 +342,7 @@ class FileBlock extends React.Component {
                             <div className="col-sm-6">
                                 <span className={this.props.obj.statusTextColorClass} style={{ fontSize: 14, fontWeight: 700 }}>{this.props.obj.status}</span>
                             </div>
-                            <div className="col-sm-6 text-end text-muted" style={{ fontSize: 11, fontWeight: 600 }}>
+                            <div className="col-sm-6 text-right text-muted" style={{ fontSize: 11, fontWeight: 600 }}>
                                 {this.props.obj.uploaded} of {this.props.obj.formattedSize}
                             </div>
                         </div>
@@ -457,14 +455,15 @@ class FileList extends React.Component {
         req.abort();
     };
 
-    deleteFile = obj => {
-        MessageBox.confirmYesNo("Please confirm", "Are you sure you want to delete file from the server?<br/><small class='text-danger'><i>What's done cannot be undone.</i></small>", () => {
+    deleteFile = (obj) => {
+        let isDeleteAll = Array.isArray(obj);
+        MessageBox.confirmYesNo("Please confirm", "Are you sure you want to delete" + (isDeleteAll ? " all the files " : " <b class='text-info'>" + obj.name + "</b> file ") + "from the server?<br/><small class='text-danger'><i>What's done cannot be undone.</i></small>", () => {
             this.setState(prevState => ({
                 data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: true } : el)
             }));
             restRequest({
                 url: apiUrlFileDelete,
-                data: obj.name,
+                data: isDeleteAll ? obj.map(x => x.name) : [obj.name],
                 method: "DELETE",
                 isJson: true,
                 onSuccess: (res) => {
@@ -495,12 +494,12 @@ class FileList extends React.Component {
                                 <div className="file-block-progress-bar" style={{ width: obj.percentComplete + "%" }}></div>
                             }
                             <div className="row" style={{ position: "inherit" }}>
-                                <div className="col-sm-10">
+                                <div className="col-sm-9">
                                     <span className="text-muted" style={{ fontSize: 14, fontWeight: 600 }}>{obj.name}</span>
                                     <div className="text-muted" style={{ fontSize: 12 }}><b>Size: </b>{formatBytes(obj.size)}</div>
                                     <div className="text-muted" style={{ fontSize: 12 }}>Created {moment(obj.createdAt).fromNow()}, Last modified {moment(obj.lastModified).fromNow()}</div>
                                 </div>
-                                <div className="col-sm-2">
+                                <div className="col-sm-3">
                                     {
                                         !obj.isDownloading && !obj.isDeleting &&
                                         <div className="icon-btn text-danger ms-1" onClick={() => this.deleteFile(obj)}>
@@ -549,7 +548,13 @@ class FileList extends React.Component {
             <div className="main-area mt-4">
                 <div className="card">
                     <div className="card-header">
-                        <h5>Previously uploaded files ({this.state.data.length})</h5>
+                        <h5 className="float-left">Previously uploaded files ({this.state.data.length})</h5>
+                        {
+                            this.state.data.length > 0 &&
+                            <div className="float-right">
+                                <button type="button" className="btn btn-danger btn-sm" onClick={() => this.deleteFile(this.state.data)}>Delete All</button>
+                            </div>
+                        }
                     </div>
                     <div className="card-body">
                         {loadingBlock}

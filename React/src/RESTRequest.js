@@ -145,15 +145,13 @@ class RESTRequest {
                 if (currInstance.timeout && /^\+?(0|[1-9]\d*)$/.test(currInstance.timeout))
                     currInstance.xhr.timeout = currInstance.timeout;
 
+                currInstance.setNoCacheHeaders();
                 if (currInstance.headers && Array.isArray(currInstance.headers) && currInstance.headers.length > 0) {
                     currInstance.headers.map(x => {
                         currInstance.xhr.setRequestHeader(x.key, x.value);
                         return null;
                     });
                 }
-
-                currInstance.xhr.setRequestHeader("Expires", "Tue, 01 Jan 1980 1:00:00 GMT");
-                currInstance.xhr.setRequestHeader("Pragma", "no-cache");
 
                 currInstance.xhr.send(dataToSend);
 
@@ -173,7 +171,7 @@ class RESTRequest {
                 currInstance.clear();
             }
         });
-    }
+    };
 
     cancel = () => {
         if (this.xhr && this.xhr.readyState > 0 && this.xhr.readyState < 4) {
@@ -181,7 +179,7 @@ class RESTRequest {
             return true;
         }
         return false;
-    }
+    };
 
     abort = () => {
         if (this.xhr) {
@@ -189,27 +187,27 @@ class RESTRequest {
             return true;
         }
         return false;
-    }
+    };
 
     get = (apiurl, data) => {
         return this.send("GET", apiurl, data);
-    }
+    };
 
     post = (apiurl, data) => {
         return this.send("POST", apiurl, data);
-    }
+    };
 
     put = (apiurl, data) => {
         return this.send("PUT", apiurl, data);
-    }
+    };
 
     patch = (apiurl, data) => {
         return this.send("PATCH", apiurl, data);
-    }
+    };
 
     delete(apiurl, data) {
         return this.send("DELETE", apiurl, data);
-    }
+    };
 
     setHeader = (key, value) => {
         this.headers.push({
@@ -217,7 +215,7 @@ class RESTRequest {
             value: value
         });
         return this;
-    }
+    };
 
     setContentTypeHeader = (contentType) => {
         if (!contentType)
@@ -227,7 +225,7 @@ class RESTRequest {
             value: contentType
         });
         return this;
-    }
+    };
 
     setResponseType = type => {
         if (!type || typeof type !== "string" || (type !== "" && type.toLowerCase() !== "text" && type.toLowerCase() !==
@@ -236,7 +234,7 @@ class RESTRequest {
             type = "";
         this.responseType = type.toLowerCase();
         return this;
-    }
+    };
 
     xhrResponsePrettifier = xhr => {
         var type = xhr.getResponseHeader('content-type');
@@ -262,7 +260,7 @@ class RESTRequest {
                 ed.response = xhr.response;
         }
         return ed;
-    }
+    };
 
     prepareQueryStringFromJSON = jsondata => {
         if (typeof jsondata === 'object') {
@@ -284,7 +282,7 @@ class RESTRequest {
             return "";
         }
         return jsondata;
-    }
+    };
 
     clear = () => {
         this.apiurl = "";
@@ -294,7 +292,14 @@ class RESTRequest {
         this.isDebug = false;
         this.headers = [];
         this.xhr = null;
-    }
+    };
+
+    setNoCacheHeaders = () => {
+        if (!this.xhr) return;
+        this.xhr.setRequestHeader("Cache-Control", "no-cache, no-store, max-age=0");
+        this.xhr.setRequestHeader("Expires", "Tue, 01 Jan 1980 1:00:00 GMT");
+        this.xhr.setRequestHeader("Pragma", "no-cache");
+    };
 }
 
 /** 
