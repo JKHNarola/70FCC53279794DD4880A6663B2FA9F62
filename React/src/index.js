@@ -573,11 +573,11 @@ class App extends React.Component {
             <>
                 <div className="container">
                     <div className="row">
-                        <div className="col-6 filelist-area">
-                            <FileList />
-                        </div>
-                        <div className="col-6 fileupload-area">
+                        <div className="col-md-6 fileupload-area">
                             <MultipleFileUpload />
+                        </div>
+                        <div className="col-md-6 filelist-area">
+                            <FileList />
                         </div>
                     </div>
                 </div>
