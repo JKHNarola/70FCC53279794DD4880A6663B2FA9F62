@@ -335,7 +335,7 @@ class FileBlock extends React.Component {
                         <div className="row mt-1">
                             <div className="col-sm-12">
                                 <div className="progress" style={{ height: 5 }}>
-                                    <div className={'progress-bar progress-bar-animated ' + this.props.obj.progressBarColorClass} role="progressbar" style={{ width: this.props.obj.progress + '%' }} aria-valuenow={this.props.obj.progress} aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div className={'progress-bar ' + this.props.obj.progressBarColorClass} role="progressbar" style={{ width: this.props.obj.progress + '%' }} aria-valuenow={this.props.obj.progress} aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
@@ -374,6 +374,12 @@ class FileList extends React.Component {
     }
 
     componentDidMount = () => {
+        setTimeout(() => {
+            // ToastNotification.success("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam scelerisque rutrum elit, vitae luctus ipsum venenatis quis.");
+            // ToastNotification.error("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam scelerisque rutrum elit, vitae luctus ipsum venenatis quis.");
+            // ToastNotification.warning("<div class='text-warning'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div> <div style='font-style: italic;'>Etiam scelerisque rutrum elit, vitae luctus ipsum venenatis quis.</div>");
+        }, 200);
+
         this.subscription = reloadListRequestObservable.subscribe(() => {
             this.getList();
         });
