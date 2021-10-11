@@ -9,6 +9,7 @@ import * as mime from 'mime';
 import { BehaviorSubject } from 'rxjs';
 import moment from "moment";
 import { MessageBoxContainer, MessageBox } from './messagebox';
+import { ToastNotificationContainer, ToastNotification } from './toastnotification.js';
 
 const reloadListRequestSubject = new BehaviorSubject(null);
 const reloadListRequestObservable = reloadListRequestSubject.asObservable();
@@ -373,14 +374,18 @@ class FileList extends React.Component {
     }
 
     componentDidMount = () => {
+        setTimeout(() => {
+            ToastNotification.success("Data saved successfully.", () => { console.log("Close callback called"); }, 5000);
+        }, 2000);
+
         this.subscription = reloadListRequestObservable.subscribe(() => {
             this.getList();
         });
-    }
+    };
 
     componentWillUnmount = () => {
         this.subscription.unsubscribe();
-    }
+    };
 
     getList = () => {
         this.setState({ isLoading: true });
@@ -581,6 +586,7 @@ class App extends React.Component {
                         </div>
                     </div>
                 </div>
+                <ToastNotificationContainer position="tr" />
                 <MessageBoxContainer />
             </>
         );
