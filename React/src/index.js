@@ -163,7 +163,7 @@ class MultipleFileUpload extends React.Component {
             let totalCnt = this.state.selectedFiles.length;
             if (totalCnt !== successCnt) MessageBox.info("Uploaded", "<b>" + successCnt + "</b> of <b>" + totalCnt + "</b> files successfully uploaded to the server.");
             else if (successCnt === 0) MessageBox.error("Failed", "All the files failed to upload.");
-            else MessageBox.success("Hurray!!", "All the file are successfully uploaded to server.");
+            else ToastNotification.success("All the file are successfully uploaded to server.", null, 5000);
         });
     };
 
@@ -375,8 +375,17 @@ class FileList extends React.Component {
 
     componentDidMount = () => {
         setTimeout(() => {
-            ToastNotification.success("Data saved successfully.", () => { console.log("Close callback called"); }, 5000);
-        }, 2000);
+            ToastNotification.warning("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.");
+            setTimeout(() => {
+                ToastNotification.success("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.", null, 5000);
+                setTimeout(() => {
+                    ToastNotification.error("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.");
+                    setTimeout(() => {
+                        ToastNotification.info("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.", null, 5000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }, 1000);
 
         this.subscription = reloadListRequestObservable.subscribe(() => {
             this.getList();

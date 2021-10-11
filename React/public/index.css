@@ -276,11 +276,27 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 .toast {
-  width: 25rem;
+  position: relative;
+  width: 20rem;
   margin: 0.9rem;
   background: rgb(255, 255, 255);
-  position: relative;
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.17);
+  -webkit-transform: scale(0.2) skew(20deg, 10deg);
+  -moz-transform: scale(0.2) skew(20deg, 10deg);
+  -o-transform: scale(0.2) skew(20deg, 10deg);
+  transform: scale(0.2) skew(20deg, 10deg);
+  opacity: 0;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.toast.show {
+  -webkit-transform: scale(1) skew(0deg, 0deg);
+  -moz-transform: scale(1) skew(0deg, 0deg);
+  -o-transform: scale(1) skew(0deg, 0deg);
+  transform: scale(1) skew(0deg, 0deg);
+  opacity: 1;
 }
 
 .toast table {
@@ -297,47 +313,42 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   padding: 0;
 }
 
+.toast.success tr:first-child {
+  border-left: 0.3rem solid rgb(40, 167, 69);
+}
+
+.toast.error tr:first-child {
+  border-left: 0.3rem solid rgb(220, 53, 69);
+}
+
+.toast.warning tr:first-child {
+  border-left: 0.3rem solid rgb(255, 193, 7);
+}
+
+.toast.info tr:first-child {
+  border-left: 0.3rem solid rgb(23, 162, 184);
+}
+
+.toast tr:first-child {
+  border-left: 0.3rem solid rgb(65, 65, 65);
+}
+
 .toast .icon {
   font-size: 2rem;
   width: 3.2rem;
 }
 
-.toast .message {}
-
-.toast.success {}
-
-.toast.success .icon {
-  border-left: 0.3rem solid rgb(40, 167, 69);
+.toast-body .message {
+  word-break: "break-word";
+  font-size: 14px;
+  margin: 10px;
 }
-
-.toast.error {}
-
-.toast.error .icon {
-  border-left: 0.3rem solid rgb(220, 53, 69);
-}
-
-.toast.warning {}
-
-.toast.warning .icon {
-  border-left: 0.3rem solid rgb(255, 193, 7);
-}
-
-.toast.info {
-  border-left: 0.3rem solid rgb(23, 162, 184);
-}
-
-.toast.info .icon {}
 
 .toast-close {
   cursor: pointer;
   text-align: center;
-  color: rgb(37, 37, 37);
+  color: rgb(195 195 195);
   padding: 10px;
-}
-
-.animate__animated.animate__bounceIn {
-  animation-duration: 0.3s;
-  --animate-duration: 0.3s;
 }
 
 .timer-progress {
@@ -354,5 +365,4 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   background: rgb(64, 67, 75);
   height: 3px;
   border: 0;
-  /* transition: all 0.2s; */
 }

@@ -98,7 +98,7 @@ export class ToastNotificationContainer extends React.Component {
             if (id)
                 setTimeout(() => {
                     this.setState(prevstate => ({ toastNotificationList: prevstate.toastNotificationList.filter(item => item.id !== id) }));
-                }, 1000);
+                }, 250);
         });
     };
 
@@ -132,42 +132,34 @@ class ToastNotificationBlock extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isShow: false,
-            // timer: 0,
-            // ticked: 0
+            isShow: false
         }
     }
 
     componentDidMount = () => {
-        this.open();
+        setTimeout(() => {
+            this.open();
+        }, 10);
     };
 
     open = () => {
         this.setState({ isShow: true });
         if (this.props.closeTimer) {
-            setTimeout(() => {
-                this.setState({ isShow: false });
-                // clearInterval(this.interval);
-                this.close();
+            this.timeout = setTimeout(() => {
+                this.close(false);
             }, this.props.closeTimer);
-
-            // this.interval = setInterval(() => {
-            //     this.setState(prev => ({ timer: 1000 * prev.ticked / this.props.closeTimer, ticked: prev.ticked + 1 }));
-            // }, 10);
-            // setTimeout(() => {
-            //     this.setState({ isShow: false });
-            //     clearInterval(this.interval);
-            //     this.close();
-            // }, this.props.closeTimer);
         }
     };
 
-    close = () => {
+    close = (isbutton) => {
+        if (!isbutton && !this.props.isAutoClose) return;
         this.setState({ isShow: false });
         removeToastNotificationRequest(this.props.id);
 
         if (this.props.onClose && typeof this.props.onClose === "function")
             this.props.onClose();
+
+        clearTimeout(this.timeout);
     };
 
     render = () => {
@@ -197,27 +189,21 @@ class ToastNotificationBlock extends React.Component {
                                 {
                                     this.props.message &&
                                     <td style={{ width: "100%" }}>
-                                        <div className="message" style={{ wordBreak: "break-word", fontSize: 16 }} dangerouslySetInnerHTML={{ __html: this.props.message }}></div>
+                                        <div className="message" dangerouslySetInnerHTML={{ __html: this.props.message }}></div>
                                     </td>
                                 }
                                 {
                                     !this.props.isAutoClose &&
-                                    <td><div className="toast-close" onClick={this.close}><i className="fas fa-times close-size"></i></div></td>
+                                    <td><div className="toast-close" onClick={() => this.close(true)}><i className="fas fa-times close-size"></i></div></td>
                                 }
                             </tr>
                         </tbody>
                     </table>
-                    {
-                        // this.props.isAutoClose && this.props.closeTimer > 0 &&
-                        // <div id={"prg_" + this.props.id} className="timer-progress">
-                        //     <div style={{ width: this.state.timer + "%" }}></div>
-                        // </div>
-                    }
                 </div>
             </div>;
 
         return <>
-            <div className={"toast animate__animated animate__bounceIn " + this.props.icon} id={this.props.id} style={{ display: this.state.isShow ? "block" : "none" }}>
+            <div className={"toast " + (this.state.isShow ? "show " : "") + this.props.icon} id={this.props.id} onClick={() => this.close(false)}>
                 <div className="toast-body">
                     {body}
                 </div>
