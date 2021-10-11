@@ -374,19 +374,6 @@ class FileList extends React.Component {
     }
 
     componentDidMount = () => {
-        setTimeout(() => {
-            ToastNotification.warning("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.");
-            setTimeout(() => {
-                ToastNotification.success("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.", null, 5000);
-                setTimeout(() => {
-                    ToastNotification.error("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.");
-                    setTimeout(() => {
-                        ToastNotification.info("Dsadsdad sadsadad sadsad sadsad asdasd asdasdas dasdsa dsadsa da.", null, 5000);
-                    }, 1000);
-                }, 1000);
-            }, 1000);
-        }, 1000);
-
         this.subscription = reloadListRequestObservable.subscribe(() => {
             this.getList();
         });

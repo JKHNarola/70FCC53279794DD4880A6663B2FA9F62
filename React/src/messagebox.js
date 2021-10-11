@@ -19,7 +19,10 @@ export const MessageBox = {
      * Opens new messagebox with customizable settings through config object as parameter.
      * config object can have below properties 
      * 
-     * {title, message, isShowIcon, icon, isDisableKeyboard, isDisableBackdrop, isOk, isCancel, isNo, isYes, onOK, onCancel, onYes, onNo}
+     * {title, message, isShowIcon, icon, iconColorClass, isDisableKeyboard, isDisableBackdrop, isOk, isCancel, isNo, isYes, onOK, onCancel, onYes, onNo}
+     * 
+     *      
+     * iconColorClass is only used for custom icon. set isShowIcon to true and font awesome icon name in icon property to use suctome icon with custom color.
      */
     open: (config) => {
         newMessageBoxRequest(config);
@@ -179,6 +182,7 @@ export class MessageBoxContainer extends React.Component {
                         message={x.message}
                         isShowIcon={x.isShowIcon}
                         icon={x.icon}
+                        iconColorClass={x.iconColorClass}
                         isDisableKeyboard={x.isDisableKeyboard}
                         isDisableBackdrop={x.isDisableBackdrop}
                         isOk={x.isOk}
@@ -232,6 +236,7 @@ class MessageBoxModalPopup extends React.Component {
     };
 
     render = () => {
+        const isCustomIcon = this.props.icon !== "success" && this.props.icon !== "info" && this.props.icon !== "error" && this.props.icon !== "warning" && this.props.icon !== "question";
         const isHideFooter = !this.props.isCancel && !this.props.isOk && !this.props.isYes && !this.props.isNo;
         const iconBlock = this.props.isShowIcon &&
             <div className="text-center mt-0 animate__animated animate__jackInTheBox" style={{ fontSize: 5 + "rem", lineHeight: 5 + "rem", opacity: 0.5 }}>
@@ -249,6 +254,9 @@ class MessageBoxModalPopup extends React.Component {
                 }
                 {
                     this.props.icon === "question" && <i className="fas fa-question-circle text-primary"></i>
+                }
+                {
+                    isCustomIcon && <i className={"fas " + this.props.icon + " " + (this.props.iconColorClass ? this.props.iconColorClass : "text-primary")}></i>
                 }
             </div>;
 

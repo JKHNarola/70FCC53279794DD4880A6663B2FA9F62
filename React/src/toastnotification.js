@@ -19,7 +19,9 @@ export const ToastNotification = {
      * Shows new toast notification with customizable settings through config object as parameter.
      * config object can have below properties 
      * 
-     * {message, isShowIcon, icon, isAutoClose, closeTimer, onClose}
+     * {message, isShowIcon, icon, iconColorClass, isAutoClose, closeTimer, onClose}
+     * 
+     * iconColorClass is only used for custom icon. set isShowIcon to true and font awesome icon name in icon property to use suctome icon with custom color.
      */
     show: (config) => {
         newToastNotificationRequest(config);
@@ -118,6 +120,7 @@ export class ToastNotificationContainer extends React.Component {
                         message={x.message}
                         isShowIcon={x.isShowIcon}
                         icon={x.icon}
+                        iconColorClass={x.iconColorClass}
                         isAutoClose={x.isAutoClose}
                         closeTimer={x.closeTimer}
                         onClose={x.onClose}
@@ -163,7 +166,8 @@ class ToastNotificationBlock extends React.Component {
     };
 
     render = () => {
-        const iconBlock = this.props.isShowIcon &&
+        const isCustomIcon = this.props.icon !== "success" && this.props.icon !== "info" && this.props.icon !== "error" && this.props.icon !== "warning";
+        const iconBlock =
             <div className="icon text-center">
                 {
                     this.props.icon === "success" && <i className="fas fa-check-circle text-success"></i>
@@ -177,6 +181,9 @@ class ToastNotificationBlock extends React.Component {
                 {
                     this.props.icon === "warning" && <i className="fas fa-exclamation-triangle text-warning"></i>
                 }
+                {
+                    isCustomIcon && <i className={"fas " + this.props.icon + " " + (this.props.iconColorClass ? this.props.iconColorClass : "text-info")}></i>
+                }
             </div>;
 
         const body =
@@ -185,7 +192,9 @@ class ToastNotificationBlock extends React.Component {
                     <table>
                         <tbody>
                             <tr>
-                                <td>{iconBlock}</td>
+                                {
+                                    this.props.isShowIcon && <td>{iconBlock}</td>
+                                }
                                 {
                                     this.props.message &&
                                     <td style={{ width: "100%" }}>
@@ -203,7 +212,7 @@ class ToastNotificationBlock extends React.Component {
             </div>;
 
         return <>
-            <div className={"toast " + (this.state.isShow ? "show " : "") + this.props.icon} id={this.props.id} onClick={() => this.close(false)}>
+            <div className={"toast " + (this.state.isShow ? "show " : "") + (!isCustomIcon ? this.props.icon : "")} id={this.props.id} onClick={() => this.close(false)}>
                 <div className="toast-body">
                     {body}
                 </div>
