@@ -1,15 +1,15 @@
 import React from 'react';
-import { restRequest } from '../common/RESTRequest';
+import restRequest from '../../common/RESTRequest';
 import { v1 as uuidv1 } from 'uuid';
-import { ToastNotification } from '../common/toastnotification.js';
-import { apiUrlFileUpload } from '../common/app-consts';
-import { formatBytes } from '../common/utils';
-import { createReloadListRequest } from '../common/common-service';
-import { BrowseOrDropFiles } from './browse-or-drop-files.component';
-import { UploadStatusCounts } from './upload-status-counts.component';
-import { FileBlock } from './fileblock.component';
+import ToastNotification from '../../common/components/toastnotification.js';
+import { apiUrlFileUpload } from '../../common/app-consts';
+import { formatBytes } from '../../common/utils';
+import { createReloadListRequest } from '../../common/service';
+import UploadStatusCounts from './upload-status-counts.component';
+import FileBlock from './fileblock.component';
+import BrowseOrDropFiles from './browse-or-drop-files.component';
 
-export class MultipleFileUpload extends React.Component {
+class MultipleFileUpload extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -156,7 +156,7 @@ export class MultipleFileUpload extends React.Component {
 
     render = () => {
         return (
-            <div className="main-area mt-4">
+            <div className="main-area">
                 <div className="card">
                     <div className="card-body">
                         <BrowseOrDropFiles disabled={this.state.uploadStatus !== "Init"} onFilesSelected={this.onFilesSelected} />
@@ -196,3 +196,5 @@ export class MultipleFileUpload extends React.Component {
         );
     };
 }
+
+export default MultipleFileUpload;

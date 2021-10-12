@@ -362,7 +362,7 @@ class RESTRequest {
  * 
  * 605 - Error while processing request
 */
-export const restRequest = config => {
+const restRequest = config => {
     var req = new RESTRequest(config.url, config.data);
     var promise = null;
     try {
@@ -437,3 +437,5 @@ export const restRequest = config => {
 
     return req;
 }
+
+export default restRequest;

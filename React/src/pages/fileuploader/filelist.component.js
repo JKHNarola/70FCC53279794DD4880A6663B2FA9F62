@@ -1,13 +1,13 @@
 import React from 'react';
-import { restRequest } from '../common/RESTRequest';
+import restRequest from '../../common/RESTRequest';
 import * as mime from 'mime';
 import moment from "moment";
-import { reloadListRequestObservable } from '../common/common-service';
-import { apiUrlFileList, apiUrlFileDownload, apiUrlFileDelete } from '../common/app-consts';
-import { formatBytes } from '../common/utils';
-import { MessageBox } from '../common/messagebox';
+import { reloadListRequestObservable } from '../../common/service';
+import { apiUrlFileList, apiUrlFileDownload, apiUrlFileDelete } from '../../common/app-consts';
+import { formatBytes } from '../../common/utils';
+import MessageBox from '../../common/components/messagebox';
 
-export class FileList extends React.Component {
+class FileList extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -195,7 +195,7 @@ export class FileList extends React.Component {
 
 
         return (
-            <div className="main-area mt-4">
+            <div className="main-area">
                 <div className="card">
                     <div className="card-header">
                         <h5 className="float-left">Previously uploaded files ({this.state.data.length})</h5>
@@ -216,3 +216,5 @@ export class FileList extends React.Component {
         );
     };
 }
+
+export default FileList;

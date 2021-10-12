@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class UploadStatusCounts extends React.Component {
+class UploadStatusCounts extends React.Component {
     render = () => {
         return (
             <div className="row">
@@ -17,3 +17,4 @@ export class UploadStatusCounts extends React.Component {
     }
 }
 
+export default UploadStatusCounts;

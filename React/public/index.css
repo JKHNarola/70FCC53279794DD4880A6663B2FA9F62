@@ -83,7 +83,7 @@ img {
   transition: all 0.3s ease-in-out;
 }
 
-.card:hover{
+.card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12), 0 5px 8px rgba(0, 0, 0, 0.24);
 }
 
@@ -188,21 +188,17 @@ img {
 }
 
 .filelist-area .card-body {
-  max-height: calc(100vh - 5.7rem);
-  overflow-y: auto;
   overflow-x: hidden;
 }
 
 .fileupload-area .card-body {
-  max-height: calc(100vh - 1.5rem);
-  overflow-y: auto;
   overflow-x: hidden;
 }
 
 .fileblock-area {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 326px);
+  /* max-height: calc(100vh - 326px); */
   border-radius: 5px;
   background: rgba(232, 232, 232, 1.0);
   padding: 0.5rem;
@@ -378,4 +374,53 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   background: rgb(64, 67, 75);
   height: 3px;
   border: 0;
+}
+
+.header {
+  height: 60px;
+  background: rgb(49, 157, 208);
+  color: white;
+}
+
+.header button {
+  text-align: left;
+  text-decoration: none;
+  color: white;
+  height: 60px;
+  border-radius: 0;
+  transition: all 0.2s;
+}
+
+.header button:hover, .header button:active, .header button:focus {
+  text-decoration: none;
+  color: white;
+}
+
+.nav-item button:hover, .nav-item button:active, .nav-item button:focus {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.nav-item.active button {
+  background-color: rgba(255, 255, 255, 0.363);
+  border-bottom: 2px solid rgb(162, 216, 241);
+}
+
+.page-area {
+  margin-top: 65px;
+  background-color: rgb(231, 238, 241);
+  border-radius: 5px;
+}
+
+.login-card {
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+
+.not-found {
+  margin: 0 auto;
+}
+
+.nav-item {
+  display: inline !important;
 }

@@ -14,7 +14,7 @@ const removeToastNotificationRequest = (id) => {
     removeToastNotificationRequestSubject.next(id);
 };
 
-export const ToastNotification = {
+const ToastNotification = {
     /**
      * Shows new toast notification with customizable settings through config object as parameter.
      * config object can have below properties 
@@ -220,3 +220,5 @@ class ToastNotificationBlock extends React.Component {
         </>;
     };
 }
+
+export default ToastNotification;

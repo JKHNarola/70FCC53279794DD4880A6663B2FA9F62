@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class FileBlock extends React.Component {
+class FileBlock extends React.Component {
     render = () => {
         return (
             <div className="row" style={this.props.style}>
@@ -52,3 +52,4 @@ export class FileBlock extends React.Component {
     };
 }
 
+export default FileBlock;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class BrowseOrDropFiles extends React.Component {
+class BrowseOrDropFiles extends React.Component {
     constructor(props) {
         super(props);
         this.state = { dragging: false };
@@ -76,3 +76,5 @@ export class BrowseOrDropFiles extends React.Component {
         );
     }
 }
+
+export default BrowseOrDropFiles;

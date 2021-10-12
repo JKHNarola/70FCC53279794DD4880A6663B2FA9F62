@@ -1,20 +1,8 @@
 import React from 'react';
-import { BehaviorSubject } from 'rxjs';
 import { v1 as uuidv1 } from 'uuid';
+import { newMessageBoxRequest, removeMessageBoxRequest, newMessageBoxRequestObservable, removeMessageBoxRequestObservable } from '../service';
 
-const newMessageBoxRequestSubject = new BehaviorSubject(null);
-const newMessageBoxRequestObservable = newMessageBoxRequestSubject.asObservable();
-const newMessageBoxRequest = (config) => {
-    newMessageBoxRequestSubject.next(config);
-};
-
-const removeMessageBoxRequestSubject = new BehaviorSubject(null);
-const removeMessageBoxRequestObservable = removeMessageBoxRequestSubject.asObservable();
-const removeMessageBoxRequest = (id) => {
-    removeMessageBoxRequestSubject.next(id);
-};
-
-export const MessageBox = {
+const MessageBox = {
     /**
      * Opens new messagebox with customizable settings through config object as parameter.
      * config object can have below properties 
@@ -307,3 +295,5 @@ class MessageBoxModalPopup extends React.Component {
         </>;
     };
 }
+
+export default MessageBox;
