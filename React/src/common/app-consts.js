@@ -7,3 +7,6 @@ export const apiUrlFileDelete = apiBaseUrl + "file/delete";
 
 export const loginPageUrl = "/";
 export const dashboardPageUrl = "/dashboard";
+export const multiFileUploadPageUrl = "/dashboard/multifileuploadpage";
+export const anotherPageUrl = "/dashboard/anotherpage";
+export const thirdPageUrl = "/dashboard/thirdpage";

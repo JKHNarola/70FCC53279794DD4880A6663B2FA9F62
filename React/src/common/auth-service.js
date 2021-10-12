@@ -24,6 +24,10 @@ const AuthService = {
     },
     removeLoggedInUser: () => {
         LocalStorageService.remove("d");
+    },
+    logOut: () => {
+        LocalStorageService.remove("d");
+        window.location.href = loginPageUrl;
     }
 };
 
