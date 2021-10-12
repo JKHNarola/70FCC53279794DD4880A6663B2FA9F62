@@ -6,7 +6,7 @@ class NotFoundPageComponent extends React.Component {
         return <div className="container">
             <div className="row">
                 <div className="col-sm-6 not-found">
-                    <div className="card mt-4">
+                    <div className="card">
                         <div className="card-body text-center">
                             <div className="text-danger" style={{ fontSize: "80px" }}>
                                 <i classNames="fas fa-exclamation-triangle"></i>

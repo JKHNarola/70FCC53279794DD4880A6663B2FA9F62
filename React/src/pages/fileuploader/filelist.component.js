@@ -6,6 +6,7 @@ import { reloadListRequestObservable } from '../../common/service';
 import { apiUrlFileList, apiUrlFileDownload, apiUrlFileDelete } from '../../common/app-consts';
 import { formatBytes } from '../../common/utils';
 import MessageBox from '../../common/components/messagebox';
+// import ToastNotification from '../../common/components/toastnotification';
 
 class FileList extends React.Component {
     constructor() {
@@ -30,6 +31,7 @@ class FileList extends React.Component {
 
     componentWillUnmount = () => {
         this.subscription.unsubscribe();
+        if (this.getRequest) this.getRequest.abort();
     };
 
     getList = () => {

@@ -6,6 +6,7 @@ import {
     Redirect
 } from "react-router-dom";
 import AuthService from '../../common/auth-service';
+import NotFoundPageComponent from '../404notfound/page';
 import FileUploaderPageComponent from '../fileuploader/page';
 import NavLink from './navlink.component';
 
@@ -53,6 +54,7 @@ class DashboardPageComponent extends React.Component {
                             <Route path="/dashboard/thirdpage">
                                 <div>Third Page</div>
                             </Route>
+                            <Route component={NotFoundPageComponent} />
                         </Switch>
                     </div>
                 </div>
