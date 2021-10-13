@@ -1,15 +1,8 @@
 import React, { Suspense } from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Redirect,
-    withRouter
-} from "react-router-dom";
+import { Switch, Route, Redirect, } from "react-router-dom";
 import { anotherPageUrl, dashboardPageUrl, multiFileUploadPageUrl, thirdPageUrl } from '../../common/app-consts';
 import AuthService from '../../common/auth-service';
 import BlockLoader from '../../common/components/block-loader';
-import LoaderService from '../../common/components/loader';
 import NotFoundPage from '../404notfound/page';
 import Header from './header.component';
 
