@@ -1,12 +1,20 @@
 import React from 'react';
 import MessageBox from '../../common/components/messagebox';
 import AuthService from '../../common/auth-service';
+import LoaderService from '../../common/components/loader';
+import { withRouter } from 'react-router';
+import { dashboardPageUrl } from '../../common/app-consts';
 
-class LoginPageComponent extends React.Component {
+class LoginPage extends React.Component {
+    componentDidMount = () => {
+        setTimeout(() => {
+            LoaderService.hide();
+        }, 200);
+    }
     onLogin = () => {
         if (Math.random() < 0.5) {
             AuthService.setLoggedInUser();
-            window.location.href = "/dashboard";
+            this.props.history.push(dashboardPageUrl);
         }
         else
             MessageBox.warning("Login failed", "Email and password you entered are seems to be wrong. Please try again.");
@@ -47,4 +55,4 @@ class LoginPageComponent extends React.Component {
     };
 }
 
-export default LoginPageComponent;
+export default withRouter(LoginPage);

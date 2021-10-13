@@ -3,7 +3,7 @@ import MultipleFileUpload from './multiple-file-upload.component';
 import FileList from './filelist.component';
 import AuthService from '../../common/auth-service';
 
-class FileUploaderPageComponent extends React.Component {
+class FileUploaderPage extends React.Component {
     constructor(props) {
         super(props);
         this.isLoggedIn = AuthService.isUserLoggedIn();
@@ -27,4 +27,4 @@ class FileUploaderPageComponent extends React.Component {
     };
 }
 
-export default FileUploaderPageComponent;
+export default FileUploaderPage;

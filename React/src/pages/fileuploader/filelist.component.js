@@ -6,7 +6,7 @@ import { reloadListRequestObservable } from '../../common/service';
 import { apiUrlFileList, apiUrlFileDownload, apiUrlFileDelete } from '../../common/app-consts';
 import { formatBytes } from '../../common/utils';
 import MessageBox from '../../common/components/messagebox';
-// import ToastNotification from '../../common/components/toastnotification';
+import BlockLoader from '../../common/components/block-loader';
 
 class FileList extends React.Component {
     constructor() {
@@ -18,12 +18,6 @@ class FileList extends React.Component {
     }
 
     componentDidMount = () => {
-        setTimeout(() => {
-            // ToastNotification.success("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam scelerisque rutrum elit, vitae luctus ipsum venenatis quis.");
-            // ToastNotification.error("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam scelerisque rutrum elit, vitae luctus ipsum venenatis quis.");
-            // ToastNotification.warning("<div class='text-warning'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div> <div style='font-style: italic;'>Etiam scelerisque rutrum elit, vitae luctus ipsum venenatis quis.</div>");
-        }, 200);
-
         this.subscription = reloadListRequestObservable.subscribe(() => {
             this.getList();
         });
@@ -111,7 +105,8 @@ class FileList extends React.Component {
         let isDeleteAll = Array.isArray(obj);
         MessageBox.confirmYesNo("Please confirm", "Are you sure you want to delete" + (isDeleteAll ? " all the files " : " <b class='text-info'>" + obj.name + "</b> file ") + "from the server?<br/><small class='text-danger'><i>What's done cannot be undone.</i></small>", () => {
             this.setState(prevState => ({
-                data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: true } : el)
+                data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: true } : el),
+                isLoading: isDeleteAll ? true : prevState.isLoading
             }));
             restRequest({
                 url: apiUrlFileDelete,
@@ -128,7 +123,8 @@ class FileList extends React.Component {
                 },
                 onComplete: () => {
                     this.setState(prevState => ({
-                        data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: false } : el)
+                        data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: false } : el),
+                        isLoading: isDeleteAll ? true : prevState.isLoading
                     }));
                 },
             });
@@ -190,26 +186,24 @@ class FileList extends React.Component {
                 </div>
             </div>
 
-        const loadingBlock = this.state.isLoading &&
-            <div className="loader">
-                <div className="text-center mt-2">Loading..</div>
-            </div>
-
-
         return (
             <div className="main-area">
                 <div className="card">
                     <div className="card-header">
-                        <h5 className="float-left">Previously uploaded files ({this.state.data.length})</h5>
-                        {
-                            this.state.data.length > 0 &&
-                            <div className="float-right">
-                                <button type="button" className="btn btn-danger btn-sm" onClick={() => this.deleteFile(this.state.data)}>Delete All</button>
+                        <div className="row">
+                            <div className="col-sm-8">
+                                <h5 className="float-left">Previously uploaded files ({this.state.data.length})</h5>
                             </div>
-                        }
+                            {
+                                this.state.data.length > 0 &&
+                                <div className="col-sm-4">
+                                    <button type="button" className="btn btn-danger btn-sm float-right" onClick={() => this.deleteFile(this.state.data)}>Delete All</button>
+                                </div>
+                            }
+                        </div>
                     </div>
                     <div className="card-body">
-                        {loadingBlock}
+                        <BlockLoader isShow={this.state.isLoading} />
                         {fileBlock}
                         {noContentBlock}
                     </div>

@@ -9,7 +9,7 @@ class NavLink extends Component {
         return (
             <li className={"nav-item " + className}>
                 <Link to={this.props.to}>
-                    <button className="btn btn-link">{this.props.title} {isActive && <span className="sr-only">(current)</span>}</button>
+                    <button style={this.props.buttonStyle} className="btn btn-link">{this.props.iconClass && <i className={this.props.iconClass}></i>}&nbsp;{this.props.title} {isActive && <span className="sr-only">(current)</span>}</button>
                 </Link>
             </li>
         );
