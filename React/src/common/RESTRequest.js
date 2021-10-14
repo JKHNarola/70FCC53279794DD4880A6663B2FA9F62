@@ -30,6 +30,9 @@ class RESTRequest {
 
                 var d = "";
                 var dataToSend = null;
+                currInstance.isError = false;
+                currInstance.lastOnProgessCalledD = null;
+                currInstance.lastOnProgessCalledU = null;
 
                 if (currInstance.data) {
                     if (currInstance.data instanceof FormData) {
@@ -85,6 +88,7 @@ class RESTRequest {
                     }
                 };
                 currInstance.xhr.onerror = () => {
+                    currInstance.isError = true;
                     if (currInstance.isDebug) console.log("onerror", currInstance.xhr);
                     var x = currInstance.xhrResponsePrettifier(currInstance.xhr);
                     x.status = 602;
@@ -101,6 +105,7 @@ class RESTRequest {
                     currInstance.clear();
                 };
                 currInstance.xhr.onabort = () => {
+                    currInstance.isAborted = true;
                     if (currInstance.isDebug) console.log("onabort", currInstance.xhr);
                     var x = currInstance.xhrResponsePrettifier(currInstance.xhr);
                     x.status = 604;
@@ -121,21 +126,26 @@ class RESTRequest {
                 };
 
                 currInstance.xhr.upload.onload = () => {
+                    currInstance.isError = true;
                 };
                 currInstance.xhr.upload.onerror = () => {
-                    console.log("upload.onerror");
                 };
                 currInstance.xhr.upload.onabort = () => {
+                    currInstance.isAborted = true;
                 };
                 currInstance.xhr.upload.onprogress = (event) => {
-                    if (currInstance.isDebug) console.log("upload.onprogress", event);
-                    if (currInstance.xhrUploadProgressCallback && typeof currInstance.xhrUploadProgressCallback === "function") {
-                        var obj = {
-                            totalBytes: event.total,
-                            uploadedBytes: event.loaded,
-                            percentComplete: (event.loaded / event.total) * 100
+                    let currtime = new Date();
+                    if (currInstance.lastOnProgessCalledU === null || (currtime.getTime() - currInstance.lastOnProgessCalledU.getTime()) >= 1000 || event.loaded === event.total || currInstance.isError || currInstance.isAborted) {
+                        currInstance.lastOnProgessCalledU = currtime;
+                        if (currInstance.isDebug) console.log("upload.onprogress", event);
+                        if (currInstance.xhrUploadProgressCallback && typeof currInstance.xhrUploadProgressCallback === "function") {
+                            var obj = {
+                                totalBytes: event.total,
+                                uploadedBytes: event.loaded,
+                                percentComplete: (event.loaded / event.total) * 100
+                            }
+                            currInstance.xhrUploadProgressCallback(obj);
                         }
-                        currInstance.xhrUploadProgressCallback(obj);
                     }
                 };
                 currInstance.xhr.open(currInstance.method, currInstance.apiurl + d, true);
@@ -285,13 +295,8 @@ class RESTRequest {
     };
 
     clear = () => {
-        this.apiurl = "";
-        this.data = undefined;
-        this.timeout = 0;
-        this.responseType = "json";
-        this.isDebug = false;
-        this.headers = [];
-        this.xhr = null;
+        this.lastOnProgessCalled = undefined;
+        this.isError = undefined;
     };
 
     setNoCacheHeaders = () => {
@@ -429,7 +434,6 @@ const restRequest = config => {
             if (config.onSuccess && typeof config.onSuccess === "function") config.onSuccess(r);
         })
         .catch(e => {
-            if (e.status === 604) req.isAborted = true;
             if (config.onError && typeof config.onError === "function") config.onError(e);
         })
         .done(() => {

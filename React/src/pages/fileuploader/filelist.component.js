@@ -59,7 +59,6 @@ class FileList extends React.Component {
             url: apiUrlFileDownload,
             data: { filename: obj.name },
             method: "GET",
-            isDebug: true,
             responseType: "arraybuffer",
             onSuccess: (res) => {
                 if (window.navigator && window.navigator.msSaveOrOpenBlob) {

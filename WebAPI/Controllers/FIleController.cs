@@ -25,7 +25,6 @@ namespace WebAPI.Controllers
         {
             try
             {
-                System.Threading.Thread.Sleep(3000);
                 var files = Request.Form.Files.ToList();
                 var folderName = Path.Combine("Resources", "Files");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -60,7 +59,6 @@ namespace WebAPI.Controllers
         {
             try
             {
-                System.Threading.Thread.Sleep(3000);
                 var folderName = Path.Combine("Resources", "Files");
                 var pathToGet = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 var list = Directory.GetFiles(pathToGet).ToList().Select(x =>
@@ -88,7 +86,6 @@ namespace WebAPI.Controllers
         {
             try
             {
-                System.Threading.Thread.Sleep(3000);
                 if (string.IsNullOrWhiteSpace(filename))
                     return BadRequest();
 
@@ -114,7 +111,6 @@ namespace WebAPI.Controllers
         {
             try
             {
-                System.Threading.Thread.Sleep(3000);
                 var listFolders = new List<string>();
                 foreach (var x in filenames)
                 {
