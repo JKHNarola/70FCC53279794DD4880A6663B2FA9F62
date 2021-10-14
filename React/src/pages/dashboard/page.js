@@ -34,7 +34,7 @@ class DashboardPage extends React.Component {
                             <Route path={thirdPageUrl}>
                                 <div>Third Page</div>
                             </Route>
-                            <Route component={NotFoundPage} />
+                            <Route path="*" component={NotFoundPage} />
                         </Switch>
                     </div>
                 </div>

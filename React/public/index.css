@@ -399,6 +399,7 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 55px;
   background-color: rgb(231, 238, 241);
   border-radius: 5px;
+  transition: all 1s ease-in-out;
 }
 
 .page-area>.row>.col-sm-12 {
@@ -478,7 +479,7 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   height: 30px;
   border-radius: 50%;
   border: 2px solid rgb(110, 110, 110);
-  border-color: rgb(170 187 195) rgb(110 175 206) rgb(49 157 208) rgba(0, 0, 0, 0);
+  border-color: rgb(170, 187, 195) rgb(110, 175, 206) rgb(49, 157, 208) rgba(0, 0, 0, 0);
   animation: lds-dual-ring 0.6s linear infinite;
   -webkit-animation: lds-dual-ring 0.6s linear infinite;
   -moz-animation: lds-dual-ring 0.6s linear infinite;
@@ -514,7 +515,7 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   display: block;
   border-radius: 50%;
   border: 2px solid rgb(110, 110, 110);
-  border-color: rgb(170 187 195) rgb(110 175 206) rgb(49 157 208) rgba(0, 0, 0, 0);
+  border-color: rgb(170, 187, 195) rgb(110, 175, 206) rgb(49, 157, 208) rgba(0, 0, 0, 0);
   animation: lds-dual-ring 1s linear infinite;
   -webkit-animation: lds-dual-ring 1s linear infinite;
   -moz-animation: lds-dual-ring 1s linear infinite;
@@ -545,16 +546,52 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   }
 }
 
+@-webkit-keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-ms-keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes lds-dual-ring {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+
 .navbar-brand {
   font-weight: 700;
   width: 200px;
-  color: #bee7f9 !important;
-  background: #136f9a;
+  color: rgba(190, 231, 249, 1.0) !important;
+  background: rgba(19, 111, 154, 1.0);
 }
 
 button.navbar-brand:hover, button.navbar-brand:active, button.navbar-brand:focus {
-  color: #bee7f9 !important;
-  background: #136f9a;
+  color: rgba(190, 231, 249, 1.0) !important;
+  background: rgba(19, 111, 154, 1.0);
 }
 
 .nav-item button {
@@ -604,7 +641,7 @@ button.navbar-brand:hover, button.navbar-brand:active, button.navbar-brand:focus
   #hamburger-main-menu li {
     cursor: pointer;
     background: rgba(45, 143, 189, 1.0);
-    border-top: 1px solid rgb(27 128 175);
+    border-top: 1px solid rgb(27, 128, 175);
     transition: all 0.2s ease-in-out;
   }
   #hamburger-main-menu li:hover {

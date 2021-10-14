@@ -18,7 +18,7 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path='/' component={LoginPage} />
                         <Route path='/dashboard' component={DashboardPageComponent} />
-                        <Route component={NotFoundPageComponent} />
+                        <Route path="*" component={NotFoundPageComponent} />
                     </Switch>
                 </Router>
                 <ToastNotificationContainer position="tr" />

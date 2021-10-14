@@ -45,8 +45,9 @@ class FileList extends React.Component {
             onError: (res) => {
                 if (res.status !== 604) MessageBox.error("Error occurred", "Some error occured while getting list of files. Please refresh page to try again.");
             },
-            onComplete: () => {
-                this.setState({ isLoading: false });
+            onComplete: (isAborted) => {
+                if (!isAborted)
+                    this.setState({ isLoading: false });
             },
         });
     };
@@ -86,10 +87,11 @@ class FileList extends React.Component {
                     data: prevState.data.map(el => el.path === obj.path ? { ...el, percentComplete: p.percentComplete } : el)
                 }));
             },
-            onComplete: () => {
-                this.setState(prevState => ({
-                    data: prevState.data.map(el => el.path === obj.path ? { ...el, isDownloading: false, percentComplete: 0 } : el)
-                }));
+            onComplete: (isAborted) => {
+                if (!isAborted)
+                    this.setState(prevState => ({
+                        data: prevState.data.map(el => el.path === obj.path ? { ...el, isDownloading: false, percentComplete: 0 } : el)
+                    }));
             },
         });
         this.setState(prevState => ({
@@ -121,11 +123,12 @@ class FileList extends React.Component {
                 onError: () => {
                     MessageBox.error("Error occurred", "Some error occured while deleting file. Please try again.");
                 },
-                onComplete: () => {
-                    this.setState(prevState => ({
-                        data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: false } : el),
-                        isLoading: isDeleteAll ? true : prevState.isLoading
-                    }));
+                onComplete: (isAborted) => {
+                    if (!isAborted)
+                        this.setState(prevState => ({
+                            data: prevState.data.map(el => el.path === obj.path ? { ...el, isDeleting: false } : el),
+                            isLoading: isDeleteAll ? true : prevState.isLoading
+                        }));
                 },
             });
         });

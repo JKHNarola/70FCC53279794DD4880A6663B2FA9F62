@@ -429,10 +429,11 @@ const restRequest = config => {
             if (config.onSuccess && typeof config.onSuccess === "function") config.onSuccess(r);
         })
         .catch(e => {
+            if (e.status === 604) req.isAborted = true;
             if (config.onError && typeof config.onError === "function") config.onError(e);
         })
         .done(() => {
-            if (config.onComplete && typeof config.onComplete === "function") config.onComplete();
+            if (config.onComplete && typeof config.onComplete === "function") config.onComplete(req.isAborted);
         });
 
     return req;
